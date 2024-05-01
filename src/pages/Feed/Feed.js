@@ -23,11 +23,14 @@ class Feed extends Component {
   };
 
   componentDidMount() {
-    fetch("http://localhost:8080/auth/user-status", {
-      headers: {
-        Authorization: "Bearer " + this.props.token,
-      },
-    })
+    fetch(
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/auth/user-status",
+      {
+        headers: {
+          Authorization: "Bearer " + this.props.token,
+        },
+      }
+    )
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch user status.");
@@ -40,7 +43,9 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
-    const socket = openSocket("http://localhost:8080");
+    const socket = openSocket(
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/"
+    );
 
     //to listen to special events from socket
     socket.on("posts", (data) => {
@@ -98,11 +103,15 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch("http://localhost:8080/feed/posts?page=" + page, {
-      headers: {
-        Authorization: "Bearer " + this.props.token,
-      },
-    })
+    fetch(
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/feed/posts?page=" +
+        page,
+      {
+        headers: {
+          Authorization: "Bearer " + this.props.token,
+        },
+      }
+    )
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch posts.");
@@ -126,14 +135,17 @@ class Feed extends Component {
 
   statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch("http://localhost:8080/auth/update-status", {
-      method: "PATCH",
-      headers: {
-        Authorization: "Bearer " + this.props.token,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ status: this.state.status }),
-    })
+    fetch(
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/auth/update-status",
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer " + this.props.token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: this.state.status }),
+      }
+    )
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Can't update status!");
@@ -175,10 +187,13 @@ class Feed extends Component {
     formData.append("content", postData.content);
     formData.append("image", postData.image);
 
-    let url = "http://localhost:8080/feed/posts";
+    let url =
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/feed/posts";
     let method = "POST";
     if (this.state.editPost) {
-      url = "http://localhost:8080/feed/post/" + this.state.editPost._id;
+      url =
+        "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/feed/post/" +
+        this.state.editPost._id;
       method = "PUT";
     }
 
@@ -229,12 +244,16 @@ class Feed extends Component {
 
   deletePostHandler = (postId) => {
     this.setState({ postsLoading: true });
-    fetch("http://localhost:8080/feed/post/" + postId, {
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + this.props.token,
-      },
-    })
+    fetch(
+      "https://node-messaging-api-e8d1fe21a0b2.herokuapp.com/feed/post/" +
+        postId,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + this.props.token,
+        },
+      }
+    )
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Deleting a post failed!");
